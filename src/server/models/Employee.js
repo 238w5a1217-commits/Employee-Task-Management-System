@@ -98,6 +98,10 @@ employeeSchema.pre('validate', function (next) {
   next();
 });
 
+// Indexes for filtering and sorting
+employeeSchema.index({ status: 1 });
+employeeSchema.index({ department: 1 });
+
 const Employee = mongoose.model('Employee', employeeSchema);
 
 export default Employee;

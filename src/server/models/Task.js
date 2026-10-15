@@ -104,6 +104,13 @@ taskSchema.pre('validate', function (next) {
   next();
 });
 
+// Compound and Single Indexes for optimized query execution
+taskSchema.index({ assignedEmployee: 1, status: 1 });
+taskSchema.index({ status: 1, dueDate: 1 });
+taskSchema.index({ department: 1, status: 1 });
+taskSchema.index({ 'assignedEmployeeSnapshot.employeeDocId': 1 });
+
+
 const Task = mongoose.model('Task', taskSchema);
 
 export default Task;

@@ -108,22 +108,22 @@ export const getEmployees = async (req, res, next) => {
  */
 export const getEmployeeById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const employee = await Employee.findById(id).lean();
+    // Fetch employee and associated tasks concurrently
+    const [employee, tasks] = await Promise.all([
+      Employee.findById(id).lean(),
+      Task.find({
+        $or: [
+          { assignedEmployee: id },
+          { 'assignedEmployeeSnapshot.employeeDocId': id },
+        ],
+      })
+        .sort({ createdAt: -1 })
+        .lean(),
+    ]);
 
     if (!employee) {
       return res.status(404).json({ error: 'Employee not found' });
     }
-
-    // Fetch all tasks associated with this employee
-    const tasks = await Task.find({
-      $or: [
-        { assignedEmployee: id },
-        { 'assignedEmployeeSnapshot.employeeDocId': id },
-      ],
-    })
-      .sort({ createdAt: -1 })
-      .lean();
 
     // Compute task stats
     const now = new Date();

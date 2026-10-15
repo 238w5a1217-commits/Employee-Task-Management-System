@@ -102,39 +102,16 @@ export default function EmployeeDetails() {
       </Link>
 
       {/* Profile Card Header */}
-      <div className="card" style={{ marginBottom: '1.5rem' }}>
-        <div
-          className="card-body"
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '1.5rem',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-            <div
-              style={{
-                width: '72px',
-                height: '72px',
-                borderRadius: 'var(--radius-lg)',
-                background: 'linear-gradient(135deg, var(--primary) 0%, #4338ca 100%)',
-                color: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.85rem',
-                fontWeight: 800,
-                boxShadow: '0 8px 16px var(--primary-glow)',
-              }}
-            >
-              {employee.name.charAt(0)}
+      <div className="card profile-card" style={{ marginBottom: '1.25rem' }}>
+        <div className="profile-card-body">
+          <div className="profile-identity">
+            <div className="profile-avatar">
+              {(employee.name || 'E').charAt(0)}
             </div>
 
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
-                <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--neutral-900)' }}>
+            <div className="profile-meta">
+              <div className="profile-title-row">
+                <h1 className="profile-name">
                   {employee.name}
                 </h1>
                 <span className="brand-badge">{employee.employeeId}</span>
@@ -142,16 +119,16 @@ export default function EmployeeDetails() {
                 <DepartmentBadge department={employee.department} />
               </div>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '0.5rem', fontSize: '0.85rem', color: 'var(--neutral-500)' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <Briefcase size={15} /> {employee.designation || 'Specialist'}
+              <div className="profile-contact-chips">
+                <span>
+                  <Briefcase size={14} /> {employee.designation || 'Specialist'}
                 </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <Mail size={15} /> {employee.email}
+                <span>
+                  <Mail size={14} /> {employee.email}
                 </span>
                 {employee.phone && (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <Phone size={15} /> {employee.phone}
+                  <span>
+                    <Phone size={14} /> {employee.phone}
                   </span>
                 )}
               </div>
@@ -159,7 +136,7 @@ export default function EmployeeDetails() {
           </div>
 
           {/* Action buttons */}
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div className="profile-action-buttons">
             <Link
               to={`/tasks/new?employeeId=${employee._id}`}
               className="btn btn-primary btn-sm"
@@ -168,15 +145,15 @@ export default function EmployeeDetails() {
                 opacity: employee.isAtCapacity || employee.status === 'Inactive' ? 0.5 : 1,
               }}
             >
-              <Plus size={16} />
-              <span>Assign Task</span>
+              <Plus size={15} />
+              <span>Assign</span>
             </Link>
             <Link to={`/employees/${employee._id}/edit`} className="btn btn-secondary btn-sm">
-              <Edit2 size={15} />
+              <Edit2 size={14} />
               <span>Edit</span>
             </Link>
             <button onClick={() => setDeleteConfirmOpen(true)} className="btn btn-danger-outline btn-sm">
-              <Trash2 size={15} />
+              <Trash2 size={14} />
               <span>Delete</span>
             </button>
           </div>
@@ -186,93 +163,107 @@ export default function EmployeeDetails() {
         {employee.status === 'On Leave' && employee.leaveStartDate && employee.leaveEndDate && (
           <div
             style={{
-              padding: '0.85rem 1.5rem',
+              padding: '0.75rem 1.25rem',
               background: 'linear-gradient(90deg, #fffbeb 0%, #fef3c7 100%)',
               borderTop: '1px solid #fde68a',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.75rem',
+              gap: '0.65rem',
               color: 'var(--warning-text)',
-              fontSize: '0.875rem',
+              fontSize: '0.825rem',
               fontWeight: 600,
             }}
           >
-            <Calendar size={18} />
+            <Calendar size={16} />
             <span>
-              Currently On Leave from{' '}
-              <strong>{new Date(employee.leaveStartDate).toLocaleDateString()}</strong> to{' '}
-              <strong>{new Date(employee.leaveEndDate).toLocaleDateString()}</strong>.
-              Tasks starting within this window cannot be assigned.
+              On Leave: <strong>{new Date(employee.leaveStartDate).toLocaleDateString()}</strong> –{' '}
+              <strong>{new Date(employee.leaveEndDate).toLocaleDateString()}</strong>
             </span>
           </div>
         )}
       </div>
 
       {/* Metrics & Workload Section */}
-      <div className="stats-grid" style={{ marginBottom: '1.5rem' }}>
+      <div className="stats-grid" style={{ marginBottom: '1.25rem' }}>
         {/* Capacity Card */}
-        <div className="card" style={{ padding: '1.25rem 1.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--neutral-500)', textTransform: 'uppercase' }}>
-              Current Capacity
+        <div className="card" style={{ padding: '1rem 1.15rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', gap: '0.35rem' }}>
+            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--neutral-500)', textTransform: 'uppercase' }}>
+              Capacity
             </span>
             <span
               className={`capacity-chip ${employee.isAtCapacity ? 'full' : 'available'}`}
-              style={{ fontSize: '0.8rem' }}
+              style={{ fontSize: '0.72rem', padding: '0.15rem 0.5rem', whiteSpace: 'nowrap' }}
             >
-              {employee.isAtCapacity ? 'Full (3/3)' : `${employee.capacityRemaining} Available`}
+              {employee.isAtCapacity ? 'Full (3/3)' : `${employee.capacityRemaining ?? 3} Free`}
             </span>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--neutral-900)', marginBottom: '0.5rem' }}>
-            {employee.activeTasksCount} / 3 <span style={{ fontSize: '0.9rem', color: 'var(--neutral-500)', fontWeight: 500 }}>Active Tasks</span>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--neutral-900)', marginBottom: '0.4rem' }}>
+            {employee.activeTasksCount || 0} / 3 <span style={{ fontSize: '0.825rem', color: 'var(--neutral-500)', fontWeight: 500 }}>Active</span>
           </div>
-          <WorkloadBar activeCount={employee.activeTasksCount} max={3} showLabel={false} />
+          <WorkloadBar activeCount={employee.activeTasksCount || 0} max={3} showLabel={false} />
         </div>
 
         {/* Total Tasks */}
-        <div className="card" style={{ padding: '1.25rem 1.5rem' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--neutral-500)', textTransform: 'uppercase' }}>
-            Total Assigned
+        <div className="card" style={{ padding: '1rem 1.15rem' }}>
+          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--neutral-500)', textTransform: 'uppercase' }}>
+            Assigned
           </span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--neutral-900)', margin: '0.5rem 0' }}>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--neutral-900)', margin: '0.4rem 0' }}>
             {stats?.totalTasks || 0}
           </div>
-          <span style={{ fontSize: '0.8rem', color: 'var(--neutral-500)' }}>
-            All-time tasks assigned to this employee
+          <span style={{ fontSize: '0.75rem', color: 'var(--neutral-500)' }}>
+            All-time tasks assigned
           </span>
         </div>
 
         {/* Completed Tasks */}
-        <div className="card" style={{ padding: '1.25rem 1.5rem' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--neutral-500)', textTransform: 'uppercase' }}>
-            Completed Tasks
+        <div className="card" style={{ padding: '1rem 1.15rem' }}>
+          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--neutral-500)', textTransform: 'uppercase' }}>
+            Completed
           </span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--success-text)', margin: '0.5rem 0' }}>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--success-text)', margin: '0.4rem 0' }}>
             {stats?.completedCount || 0}
           </div>
-          <span style={{ fontSize: '0.8rem', color: 'var(--neutral-500)' }}>
-            Successfully finalized tasks
+          <span style={{ fontSize: '0.75rem', color: 'var(--neutral-500)' }}>
+            Successfully finalized
           </span>
         </div>
 
         {/* Overdue Tasks */}
-        <div className="card" style={{ padding: '1.25rem 1.5rem' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--neutral-500)', textTransform: 'uppercase' }}>
-            Overdue Warning
+        <div className="card" style={{ padding: '1rem 1.15rem' }}>
+          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--neutral-500)', textTransform: 'uppercase' }}>
+            Overdue
           </span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: stats?.overdueCount > 0 ? 'var(--danger)' : 'var(--neutral-900)', margin: '0.5rem 0' }}>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: (stats?.overdueCount || 0) > 0 ? 'var(--danger)' : 'var(--neutral-900)', margin: '0.4rem 0' }}>
             {stats?.overdueCount || 0}
           </div>
-          <span style={{ fontSize: '0.8rem', color: stats?.overdueCount > 0 ? 'var(--danger)' : 'var(--neutral-500)' }}>
-            {stats?.overdueCount > 0 ? 'Requires immediate attention' : 'No overdue tasks'}
+          <span style={{ fontSize: '0.75rem', color: (stats?.overdueCount || 0) > 0 ? 'var(--danger)' : 'var(--neutral-500)' }}>
+            {(stats?.overdueCount || 0) > 0 ? 'Needs attention' : 'No overdue tasks'}
           </span>
         </div>
       </div>
 
       {/* Tasks Tab Section */}
-      <div className="card">
-        <div className="card-header" style={{ padding: '0 1.5rem' }}>
-          <div style={{ display: 'flex', gap: '1rem' }}>
+      <div className="card" style={{ overflow: 'hidden' }}>
+        <div className="card-header" style={{ padding: '0 0.75rem', borderBottom: '1px solid var(--neutral-200)' }}>
+          <div className="employee-tabs-bar">
+            <button
+              onClick={() => setActiveTab('active')}
+              className={`employee-tab-btn ${activeTab === 'active' ? 'active' : ''}`}
+            >
+              <Clock size={15} />
+              <span>Active ({activeTasks.length})</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              className={`employee-tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+            >
+              <CheckCircle2 size={15} />
+              <span>History ({historyTasks.length})</span>
+            </button>
+          </div>
+        </div>
             <button
               onClick={() => setActiveTab('active')}
               style={{

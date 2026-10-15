@@ -10,69 +10,126 @@ export const getDashboardStats = async (req, res, next) => {
   try {
     const now = new Date();
 
-    // 1. Employee Statistics
+    // Run parallel aggregated queries instead of 35 separate roundtrips
     const [
-      totalEmployees,
-      activeEmployees,
-      inactiveEmployees,
-      onLeaveEmployees,
+      allEmployees,
+      taskStatsResult,
+      deptTasksResult,
+      activeTasksAggregation,
+      urgentOrOverdue,
     ] = await Promise.all([
-      Employee.countDocuments(),
-      Employee.countDocuments({ status: 'Active' }),
-      Employee.countDocuments({ status: 'Inactive' }),
-      Employee.countDocuments({ status: 'On Leave' }),
-    ]);
-
-    // 2. Task Statistics
-    const [
-      totalTasks,
-      todoTasks,
-      inProgressTasks,
-      completedTasks,
-      cancelledTasks,
-      overdueTasksCount,
-    ] = await Promise.all([
-      Task.countDocuments(),
-      Task.countDocuments({ status: 'Todo' }),
-      Task.countDocuments({ status: 'In Progress' }),
-      Task.countDocuments({ status: 'Completed' }),
-      Task.countDocuments({ status: 'Cancelled' }),
-      Task.countDocuments({
-        status: { $nin: ['Completed', 'Cancelled'] },
-        dueDate: { $lt: now },
-      }),
-    ]);
-
-    const activeTasksTotal = todoTasks + inProgressTasks;
-
-    // 3. Employee Workloads (calculated on server)
-    const allEmployees = await Employee.find().sort({ name: 1 }).lean();
-
-    // Aggregate active tasks grouped by assignedEmployee
-    const activeTasksAggregation = await Task.aggregate([
-      {
-        $match: {
-          status: { $in: ['Todo', 'In Progress'] },
-          assignedEmployee: { $ne: null },
-        },
-      },
-      {
-        $group: {
-          _id: '$assignedEmployee',
-          activeTasks: { $sum: 1 },
-          tasks: {
-            $push: {
-              _id: '$_id',
-              title: '$title',
-              status: '$status',
-              priority: '$priority',
-              dueDate: '$dueDate',
+      Employee.find().sort({ name: 1 }).lean(),
+      Task.aggregate([
+        {
+          $group: {
+            _id: null,
+            total: { $sum: 1 },
+            todo: { $sum: { $cond: [{ $eq: ['$status', 'Todo'] }, 1, 0] } },
+            inProgress: { $sum: { $cond: [{ $eq: ['$status', 'In Progress'] }, 1, 0] } },
+            completed: { $sum: { $cond: [{ $eq: ['$status', 'Completed'] }, 1, 0] } },
+            cancelled: { $sum: { $cond: [{ $eq: ['$status', 'Cancelled'] }, 1, 0] } },
+            overdue: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $nin: ['$status', ['Completed', 'Cancelled']] },
+                      { $lt: ['$dueDate', now] },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
             },
           },
         },
-      },
+      ]),
+      Task.aggregate([
+        {
+          $group: {
+            _id: '$department',
+            totalTasks: { $sum: 1 },
+            activeTasks: {
+              $sum: { $cond: [{ $in: ['$status', ['Todo', 'In Progress']] }, 1, 0] },
+            },
+            completedTasks: {
+              $sum: { $cond: [{ $eq: ['$status', 'Completed'] }, 1, 0] },
+            },
+            overdueTasks: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $nin: ['$status', ['Completed', 'Cancelled']] },
+                      { $lt: ['$dueDate', now] },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+          },
+        },
+      ]),
+      Task.aggregate([
+        {
+          $match: {
+            status: { $in: ['Todo', 'In Progress'] },
+            assignedEmployee: { $ne: null },
+          },
+        },
+        {
+          $group: {
+            _id: '$assignedEmployee',
+            activeTasks: { $sum: 1 },
+            tasks: {
+              $push: {
+                _id: '$_id',
+                title: '$title',
+                status: '$status',
+                priority: '$priority',
+                dueDate: '$dueDate',
+              },
+            },
+          },
+        },
+      ]),
+      Task.find({
+        status: { $nin: ['Completed', 'Cancelled'] },
+        $or: [{ dueDate: { $lt: now } }, { priority: 'Urgent' }],
+      })
+        .populate('assignedEmployee')
+        .sort({ dueDate: 1 })
+        .limit(6)
+        .lean(),
     ]);
 
+    // 1. Employee Statistics (computed in-memory from allEmployees)
+    const totalEmployees = allEmployees.length;
+    let activeEmployees = 0;
+    let inactiveEmployees = 0;
+    let onLeaveEmployees = 0;
+
+    for (let i = 0; i < allEmployees.length; i++) {
+      const st = allEmployees[i].status;
+      if (st === 'Active') activeEmployees++;
+      else if (st === 'Inactive') inactiveEmployees++;
+      else if (st === 'On Leave') onLeaveEmployees++;
+    }
+
+    // 2. Task Statistics
+    const taskStats = taskStatsResult[0] || {};
+    const totalTasks = taskStats.total || 0;
+    const todoTasks = taskStats.todo || 0;
+    const inProgressTasks = taskStats.inProgress || 0;
+    const completedTasks = taskStats.completed || 0;
+    const cancelledTasks = taskStats.cancelled || 0;
+    const overdueTasksCount = taskStats.overdue || 0;
+    const activeTasksTotal = todoTasks + inProgressTasks;
+
+    // 3. Employee Workloads
     const workloadMap = {};
     activeTasksAggregation.forEach((item) => {
       workloadMap[item._id.toString()] = {
@@ -103,41 +160,26 @@ export const getDashboardStats = async (req, res, next) => {
       };
     });
 
-    // 4. Department Breakdown
-    const departmentStats = await Promise.all(
-      DEPARTMENTS.map(async (dept) => {
-        const [empCount, tasksCount, activeCount, completedCount, overdueCount] = await Promise.all([
-          Employee.countDocuments({ department: dept }),
-          Task.countDocuments({ department: dept }),
-          Task.countDocuments({ department: dept, status: { $in: ['Todo', 'In Progress'] } }),
-          Task.countDocuments({ department: dept, status: 'Completed' }),
-          Task.countDocuments({
-            department: dept,
-            status: { $nin: ['Completed', 'Cancelled'] },
-            dueDate: { $lt: now },
-          }),
-        ]);
+    // 4. Department Breakdown (computed from aggregated deptTasksResult & allEmployees)
+    const deptTaskMap = {};
+    deptTasksResult.forEach((d) => {
+      if (d._id) {
+        deptTaskMap[d._id] = d;
+      }
+    });
 
-        return {
-          department: dept,
-          employeeCount: empCount,
-          totalTasks: tasksCount,
-          activeTasks: activeCount,
-          completedTasks: completedCount,
-          overdueTasks: overdueCount,
-        };
-      })
-    );
-
-    // 5. Urgent or Overdue Tasks (Limit 5 for quick actions widget)
-    const urgentOrOverdue = await Task.find({
-      status: { $nin: ['Completed', 'Cancelled'] },
-      $or: [{ dueDate: { $lt: now } }, { priority: 'Urgent' }],
-    })
-      .populate('assignedEmployee')
-      .sort({ dueDate: 1 })
-      .limit(6)
-      .lean();
+    const departmentStats = DEPARTMENTS.map((dept) => {
+      const empCount = allEmployees.filter((e) => e.department === dept).length;
+      const dData = deptTaskMap[dept] || {};
+      return {
+        department: dept,
+        employeeCount: empCount,
+        totalTasks: dData.totalTasks || 0,
+        activeTasks: dData.activeTasks || 0,
+        completedTasks: dData.completedTasks || 0,
+        overdueTasks: dData.overdueTasks || 0,
+      };
+    });
 
     res.json({
       overview: {
