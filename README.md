@@ -271,23 +271,6 @@ If two concurrent requests arrive simultaneously for an employee currently holdi
 
 ---
 
-## 📦 Deployment Instructions
-
-### Deploying to Render / Railway / Heroku
-1. Push this repository to GitHub.
-2. Connect the repository in [Render](https://render.com).
-3. Set the build command:
-   ```bash
-   npm install && npm run build
-   ```
-4. Set the start command:
-   ```bash
-   npm start
-   ```
-5. Add the environment variable:
-   - `MONGODB_URI`: Your MongoDB Atlas connection string.
-   - `PORT`: `5000` (or host provided).
-   - `NODE_ENV`: `production`.
 
 ---
-*Created for Roots Media Marketing Technical Assignment by MERN Stack Candidate.*
+*Created for Roots Media Marketing Technical Assignment *
