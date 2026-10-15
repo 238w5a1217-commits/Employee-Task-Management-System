@@ -264,46 +264,6 @@ export default function EmployeeDetails() {
             </button>
           </div>
         </div>
-            <button
-              onClick={() => setActiveTab('active')}
-              style={{
-                background: 'none',
-                border: 'none',
-                borderBottom: activeTab === 'active' ? '3px solid var(--primary)' : '3px solid transparent',
-                padding: '1rem 0.5rem',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                color: activeTab === 'active' ? 'var(--primary)' : 'var(--neutral-500)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-              }}
-            >
-              <Clock size={16} />
-              <span>Active Tasks ({activeTasks.length})</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('history')}
-              style={{
-                background: 'none',
-                border: 'none',
-                borderBottom: activeTab === 'history' ? '3px solid var(--primary)' : '3px solid transparent',
-                padding: '1rem 0.5rem',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                color: activeTab === 'history' ? 'var(--primary)' : 'var(--neutral-500)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-              }}
-            >
-              <CheckCircle2 size={16} />
-              <span>Task History ({historyTasks.length})</span>
-            </button>
-          </div>
-        </div>
 
         <div className="card-body" style={{ padding: 0 }}>
           {activeTab === 'active' ? (
