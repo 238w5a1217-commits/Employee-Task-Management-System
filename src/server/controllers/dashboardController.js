@@ -33,7 +33,7 @@ export const getDashboardStats = async (req, res, next) => {
                 $cond: [
                   {
                     $and: [
-                      { $nin: ['$status', ['Completed', 'Cancelled']] },
+                      { $in: ['$status', ['Todo', 'In Progress']] },
                       { $lt: ['$dueDate', now] },
                     ],
                   },
@@ -61,7 +61,7 @@ export const getDashboardStats = async (req, res, next) => {
                 $cond: [
                   {
                     $and: [
-                      { $nin: ['$status', ['Completed', 'Cancelled']] },
+                      { $in: ['$status', ['Todo', 'In Progress']] },
                       { $lt: ['$dueDate', now] },
                     ],
                   },
