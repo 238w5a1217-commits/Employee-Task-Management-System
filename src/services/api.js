@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+// When deployed separately (e.g. Vercel frontend + Render backend), VITE_API_URL is used.
+// When deployed unified on Render/single host, relative '/api' is used.
+const rawApiUrl = import.meta.env.VITE_API_URL || '';
+const API_BASE = rawApiUrl ? `${rawApiUrl.replace(/\/$/, '')}/api` : '/api';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE,
   headers: {
     'Content-Type': 'application/json',
   },

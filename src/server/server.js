@@ -55,6 +55,19 @@ if (fs.existsSync(distPath)) {
     }
     res.sendFile(path.join(distPath, 'index.html'));
   });
+} else {
+  app.get('/', (req, res) => {
+    res.json({
+      status: 'online',
+      message: 'Roots Media Employee & Task Management API is running',
+      endpoints: {
+        health: '/api/health',
+        dashboard: '/api/dashboard',
+        employees: '/api/employees',
+        tasks: '/api/tasks',
+      },
+    });
+  });
 }
 
 import { connectDB } from './config/db.js';
