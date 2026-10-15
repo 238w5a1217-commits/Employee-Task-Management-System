@@ -2378,10 +2378,6 @@ body {
     background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
     border-radius: 999px;
   }
-    font-weight: 600;
-    color: var(--neutral-500);
-    white-space: nowrap;
-  }
 
   /* ========================================================================
      Mobile Entity Cards (For TaskList & EmployeeList pages in Light Style)
