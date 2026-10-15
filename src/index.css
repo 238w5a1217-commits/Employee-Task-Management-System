@@ -2539,6 +2539,21 @@ body {
     font-size: 0.78rem;
     color: var(--neutral-500);
   }
+
+  /* Toast Notifications on Mobile: Floating cleanly ABOVE bottom navigation bar */
+  .toast-container {
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px) + 0.85rem) !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    width: auto !important;
+    max-width: calc(100vw - 2rem) !important;
+    z-index: 1200 !important;
+  }
+
+  .toast-item {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid var(--neutral-300) !important;
+  }
 }
 
 /* Animations */
