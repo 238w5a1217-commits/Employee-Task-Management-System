@@ -108,6 +108,7 @@ export const getEmployees = async (req, res, next) => {
  */
 export const getEmployeeById = async (req, res, next) => {
   try {
+    const { id } = req.params;
     // Fetch employee and associated tasks concurrently
     const [employee, tasks] = await Promise.all([
       Employee.findById(id).lean(),
