@@ -76,7 +76,9 @@ export default function EmployeeDetails() {
     );
   }
 
-  const { employee, tasks = [], stats } = data;
+  const employee = data?.employee || {};
+  const tasks = Array.isArray(data?.tasks) ? data.tasks : [];
+  const stats = data?.stats || {};
   const activeTasks = tasks.filter((t) => t.status === 'Todo' || t.status === 'In Progress');
   const historyTasks = tasks.filter((t) => t.status === 'Completed' || t.status === 'Cancelled');
 

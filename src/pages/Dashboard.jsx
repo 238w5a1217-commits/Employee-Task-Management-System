@@ -35,8 +35,9 @@ export default function Dashboard() {
     try {
       setLoading(true);
       const res = await getDashboardStats();
-      setData(res.data);
+      setData(res.data || {});
     } catch (err) {
+      setData({});
       showError(err.message || 'Failed to load dashboard metrics');
     } finally {
       setLoading(false);
@@ -68,7 +69,10 @@ export default function Dashboard() {
     );
   }
 
-  const { overview, employeeWorkloads = [], departmentStats = [], attentionTasks = [] } = data || {};
+  const overview = data?.overview || {};
+  const employeeWorkloads = Array.isArray(data?.employeeWorkloads) ? data.employeeWorkloads : [];
+  const departmentStats = Array.isArray(data?.departmentStats) ? data.departmentStats : [];
+  const attentionTasks = Array.isArray(data?.attentionTasks) ? data.attentionTasks : [];
 
   return (
     <div className="dashboard-wrapper">
@@ -234,7 +238,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mobile-task-cards-list">
-            {attentionTasks.length === 0 ? (
+            {(attentionTasks || []).length === 0 ? (
               <div className="mobile-empty-card">
                 <CheckCircle2 size={32} style={{ color: 'var(--success)' }} />
                 <h4>All Tasks On Track</h4>
@@ -443,7 +447,7 @@ export default function Dashboard() {
                 Employee Workload & Capacity
               </h3>
               <Link to="/employees" className="btn btn-outline btn-sm">
-                View All ({employeeWorkloads.length})
+                View All ({(employeeWorkloads || []).length})
               </Link>
             </div>
             <div
@@ -454,7 +458,7 @@ export default function Dashboard() {
                 padding: '1rem 1.5rem',
               }}
             >
-              {employeeWorkloads.length === 0 ? (
+              {(employeeWorkloads || []).length === 0 ? (
                 <p
                   style={{
                     color: 'var(--neutral-500)',
@@ -570,7 +574,7 @@ export default function Dashboard() {
                 padding: '1rem 1.5rem',
               }}
             >
-              {attentionTasks.length === 0 ? (
+              {(attentionTasks || []).length === 0 ? (
                 <div
                   style={{
                     textAlign: 'center',

@@ -76,14 +76,16 @@ import { connectDB } from './config/db.js';
 app.use(notFoundHandler);
 app.use(globalErrorHandler);
 
-// Connect to MongoDB and start server
-connectDB().catch((err) => {
-  console.error('Failed to initialize database:', err.message);
-});
+// Connect to MongoDB and start standalone server (when not running as Vercel serverless)
+if (!process.env.VERCEL) {
+  connectDB().catch((err) => {
+    console.error('Failed to initialize database:', err.message);
+  });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📡 API Endpoints available at http://localhost:${PORT}/api`);
-});
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📡 API Endpoints available at http://localhost:${PORT}/api`);
+  });
+}
 
 export default app;

@@ -72,9 +72,10 @@ export default function EmployeeList() {
         sortOrder,
       };
       const res = await getEmployees(params);
-      setEmployees(res.data.employees);
-      setPagination(res.data.pagination);
+      setEmployees(Array.isArray(res.data?.employees) ? res.data.employees : []);
+      setPagination(res.data?.pagination || { total: 0, totalPages: 1, page: 1, limit: 10 });
     } catch (err) {
+      setEmployees([]);
       showError(err.message || 'Failed to fetch employees');
     } finally {
       setLoading(false);
@@ -168,7 +169,7 @@ export default function EmployeeList() {
             className="filter-select"
             title="Sort by field"
           >
-            <option value="createdAt">Sort: Created Date</option>
+            <option value="createdAt">Sort: Date</option>
             <option value="name">Sort: Name</option>
             <option value="employeeId">Sort: Employee ID</option>
             <option value="department">Sort: Department</option>
@@ -190,7 +191,7 @@ export default function EmployeeList() {
       {/* Content Table */}
       {loading ? (
         <TableSkeleton rows={6} cols={6} />
-      ) : employees.length === 0 ? (
+      ) : (employees || []).length === 0 ? (
         <EmptyState
           title="No employees found"
           description="Try adjusting your search criteria or filters, or add a new employee."

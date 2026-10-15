@@ -86,9 +86,10 @@ export default function TaskList() {
         sortOrder,
       };
       const res = await getTasks(params);
-      setTasks(res.data.tasks);
-      setPagination(res.data.pagination);
+      setTasks(Array.isArray(res.data?.tasks) ? res.data.tasks : []);
+      setPagination(res.data?.pagination || { total: 0, totalPages: 1, page: 1, limit: 10 });
     } catch (err) {
+      setTasks([]);
       showError(err.message || 'Failed to fetch tasks');
     } finally {
       setLoading(false);
@@ -230,9 +231,9 @@ export default function TaskList() {
             className="filter-select"
             title="Sort by criteria"
           >
-            <option value="createdAt">Sort: Created Date</option>
-            <option value="dueDate">Sort: Due Date</option>
-            <option value="priority">Sort: Priority (Importance)</option>
+            <option value="createdAt">Sort: Date</option>
+            <option value="dueDate">Sort: Due</option>
+            <option value="priority">Sort: Priority</option>
             <option value="title">Sort: Title</option>
           </select>
 
@@ -251,7 +252,7 @@ export default function TaskList() {
       {/* Task Table */}
       {loading ? (
         <TableSkeleton rows={7} cols={7} />
-      ) : tasks.length === 0 ? (
+      ) : (tasks || []).length === 0 ? (
         <EmptyState
           title="No tasks found"
           description="Try clearing your search query or filters to view available tasks."

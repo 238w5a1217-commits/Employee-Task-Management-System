@@ -7,8 +7,17 @@ export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
   const addNotification = useCallback((type, message, duration = 5000) => {
+    let cleanMsg = 'An unexpected notification occurred';
+    if (typeof message === 'string') {
+      cleanMsg = message;
+    } else if (message instanceof Error) {
+      cleanMsg = message.message;
+    } else if (typeof message === 'object' && message !== null) {
+      cleanMsg = message.error || message.message || JSON.stringify(message);
+    }
+
     const id = Date.now() + Math.random().toString(36).substring(2, 9);
-    setNotifications((prev) => [...prev, { id, type, message }]);
+    setNotifications((prev) => [...prev, { id, type, message: cleanMsg }]);
 
     if (duration > 0) {
       setTimeout(() => {
