@@ -342,7 +342,7 @@ export default function Dashboard() {
         <section className="mobile-dept-section">
           <div className="mobile-section-header-row">
             <h2 className="mobile-section-heading">DEPARTMENT DISTRIBUTION</h2>
-            <span style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.74rem', color: 'var(--neutral-500)', fontWeight: 600 }}>
               5 Units
             </span>
           </div>
@@ -352,39 +352,34 @@ export default function Dashboard() {
               const total = dept.totalTasks || (dept.activeTasks + dept.completedTasks);
               const progressPercent = total > 0 ? Math.round((dept.completedTasks / total) * 100) : 0;
               return (
-                <div key={dept.department} className="mobile-dept-card">
-                  <div className="mobile-dept-card-header">
-                    <DepartmentBadge department={dept.department} />
-                    <span className="mobile-dept-staff-badge">
-                      <Users size={12} /> {dept.employeeCount} Staff
+                <div key={dept.department} className="mobile-dept-card-compact">
+                  <div className="mobile-dept-compact-top">
+                    <div className="mobile-dept-badge-wrap">
+                      <DepartmentBadge department={dept.department} />
+                      <span className="mobile-dept-staff-count">
+                        <Users size={12} /> {dept.employeeCount} Staff
+                      </span>
+                    </div>
+                    <span className="mobile-dept-pct-badge">{progressPercent}% Done</span>
+                  </div>
+
+                  <div className="mobile-dept-compact-stats">
+                    <span className="stat-pill">
+                      Active: <strong>{dept.activeTasks}</strong>
+                    </span>
+                    <span className="stat-pill success">
+                      Completed: <strong>{dept.completedTasks}</strong>
+                    </span>
+                    <span className={`stat-pill ${dept.overdueTasks > 0 ? 'danger' : ''}`}>
+                      Overdue: <strong>{dept.overdueTasks}</strong>
                     </span>
                   </div>
 
-                  <div className="mobile-dept-stats-row">
-                    <div className="mobile-dept-stat-col">
-                      <span className="stat-label">Active</span>
-                      <strong className="stat-value">{dept.activeTasks}</strong>
-                    </div>
-                    <div className="mobile-dept-stat-col">
-                      <span className="stat-label">Completed</span>
-                      <strong className="stat-value text-success">{dept.completedTasks}</strong>
-                    </div>
-                    <div className="mobile-dept-stat-col">
-                      <span className="stat-label">Overdue</span>
-                      <strong className={`stat-value ${dept.overdueTasks > 0 ? 'text-danger' : ''}`}>
-                        {dept.overdueTasks}
-                      </strong>
-                    </div>
-                  </div>
-
-                  <div className="mobile-dept-progress-wrap">
-                    <div className="mobile-dept-progress-bar">
-                      <div
-                        className="mobile-dept-progress-fill"
-                        style={{ width: `${progressPercent}%` }}
-                      />
-                    </div>
-                    <span className="mobile-dept-progress-label">{progressPercent}% Completed</span>
+                  <div className="mobile-dept-mini-progress">
+                    <div
+                      className="mobile-dept-mini-progress-fill"
+                      style={{ width: `${progressPercent}%` }}
+                    />
                   </div>
                 </div>
               );

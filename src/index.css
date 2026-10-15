@@ -1665,7 +1665,7 @@ body {
   }
 
   .main-content {
-    padding: 1rem 1rem 120px 1rem !important;
+    padding: 1rem 1rem 0.5rem 1rem !important;
   }
 
   /* App Footer on Mobile */
@@ -1673,9 +1673,9 @@ body {
     background: #ffffff !important;
     border-top: 1px solid var(--border-color) !important;
     color: var(--neutral-500) !important;
-    padding: 1.25rem 1rem 90px 1rem !important;
+    padding: 0.85rem 1rem 78px 1rem !important;
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
   }
 
   /* Mobile Sidebar Off-Canvas Drawer */
@@ -2279,110 +2279,105 @@ body {
   }
 
   /* ========================================================================
-     Mobile Department Distribution Cards
+     Mobile Department Distribution Cards (Sleek & Compact)
      ======================================================================== */
   .mobile-dept-section {
-    margin-bottom: 2rem;
+    margin-bottom: 0.75rem;
   }
 
   .mobile-dept-cards-grid {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.45rem;
   }
 
-  .mobile-dept-card {
+  .mobile-dept-card-compact {
     background: #ffffff;
     border: 1px solid var(--neutral-200);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.15rem;
+    border-radius: var(--radius-md);
+    padding: 0.7rem 0.85rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    box-shadow: var(--shadow-sm);
+    gap: 0.4rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   }
 
-  .mobile-dept-card-header {
+  .mobile-dept-compact-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .mobile-dept-staff-badge {
+  .mobile-dept-badge-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .mobile-dept-staff-count {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    font-size: 0.76rem;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--neutral-500);
+  }
+
+  .mobile-dept-pct-badge {
+    font-size: 0.72rem;
     font-weight: 700;
+    color: var(--primary);
+  }
+
+  .mobile-dept-compact-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill {
+    font-size: 0.72rem;
     color: var(--neutral-600);
     background: var(--neutral-100);
-    border: 1px solid var(--neutral-200);
-    padding: 0.2rem 0.55rem;
-    border-radius: var(--radius-full);
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-sm);
   }
 
-  .mobile-dept-stats-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    background: var(--neutral-50);
-    border: 1px solid var(--neutral-200);
-    border-radius: var(--radius-md);
-    padding: 0.55rem 0.75rem;
-    gap: 0.5rem;
-  }
-
-  .mobile-dept-stat-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.15rem;
-  }
-
-  .mobile-dept-stat-col .stat-label {
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--neutral-500);
-    letter-spacing: 0.04em;
-  }
-
-  .mobile-dept-stat-col .stat-value {
-    font-size: 1.05rem;
-    font-weight: 800;
+  .stat-pill strong {
     color: var(--neutral-900);
   }
 
-  .mobile-dept-stat-col .stat-value.text-success {
+  .stat-pill.success {
+    background: #ecfdf5;
     color: var(--success-text);
   }
 
-  .mobile-dept-stat-col .stat-value.text-danger {
-    color: var(--danger);
+  .stat-pill.success strong {
+    color: var(--success-text);
   }
 
-  .mobile-dept-progress-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
+  .stat-pill.danger {
+    background: #fee2e2;
+    color: var(--danger-text);
   }
 
-  .mobile-dept-progress-bar {
-    flex: 1;
-    height: 6px;
-    background: var(--neutral-200);
+  .stat-pill.danger strong {
+    color: var(--danger-text);
+  }
+
+  .mobile-dept-mini-progress {
+    height: 4px;
+    background: #e2e8f0;
     border-radius: 999px;
     overflow: hidden;
   }
 
-  .mobile-dept-progress-fill {
+  .mobile-dept-mini-progress-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
     border-radius: 999px;
-    transition: width 0.4s ease;
   }
-
-  .mobile-dept-progress-label {
-    font-size: 0.72rem;
     font-weight: 600;
     color: var(--neutral-500);
     white-space: nowrap;
