@@ -2279,6 +2279,116 @@ body {
   }
 
   /* ========================================================================
+     Mobile Department Distribution Cards
+     ======================================================================== */
+  .mobile-dept-section {
+    margin-bottom: 2rem;
+  }
+
+  .mobile-dept-cards-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .mobile-dept-card {
+    background: #ffffff;
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .mobile-dept-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mobile-dept-staff-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--neutral-600);
+    background: var(--neutral-100);
+    border: 1px solid var(--neutral-200);
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-full);
+  }
+
+  .mobile-dept-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: var(--neutral-50);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-md);
+    padding: 0.55rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .mobile-dept-stat-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+  }
+
+  .mobile-dept-stat-col .stat-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--neutral-500);
+    letter-spacing: 0.04em;
+  }
+
+  .mobile-dept-stat-col .stat-value {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--neutral-900);
+  }
+
+  .mobile-dept-stat-col .stat-value.text-success {
+    color: var(--success-text);
+  }
+
+  .mobile-dept-stat-col .stat-value.text-danger {
+    color: var(--danger);
+  }
+
+  .mobile-dept-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .mobile-dept-progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--neutral-200);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .mobile-dept-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+
+  .mobile-dept-progress-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--neutral-500);
+    white-space: nowrap;
+  }
+
+  /* ========================================================================
      Mobile Entity Cards (For TaskList & EmployeeList pages in Light Style)
      ======================================================================== */
   .mobile-entity-card {
